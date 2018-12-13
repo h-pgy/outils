@@ -55,3 +55,47 @@ def remover_extensoes_erradas(paths, lista_extensoes):
         del paths[extensao]
     
     return paths
+
+def diretorio_pai(path):
+    '''Obtém o diretorio pai de um path de arquivo, retornando
+    apenas o nome do diretorio pai, não o path inteiro'''
+    
+    return os.path.split(os.path.split(path)[-2])[-1]
+
+def nome_arquivo(path):
+    '''Retorna apenas o nome do arquivo - seu basename'''
+    
+    return os.path.basename(path)
+
+def data_criacao(file_path):
+    '''Retorna uma tupla com o ano, o mês e o dia de criação do arquivo'''
+    
+    time_ = os.path.getctime(file_path)
+    dtime = datetime.fromtimestamp(time_)
+    
+    return dtime.day, dtime.month, dtime.year
+
+def gerar_df(paths):
+    '''Retorna um dataframe com as colunas abaixo, a partir da chamada das funções anteriories'''
+    cols = [
+            'nome_pasta',
+            'nome_arquivo',
+            'extensao',
+            'dia_criacao',
+            'mes_criacao',
+            'ano_criacao',
+            'path'
+           ]
+    result = {col:[] for col in cols}
+    for tipo in paths.keys():
+        for path in paths[tipo]:
+            result['nome_pasta'].append(diretorio_pai(path))
+            result['nome_arquivo'].append(nome_arquivo(path))
+            result['extensao'].append(tipo)
+            dia, mes, ano = data_criacao(path)
+            result['dia_criacao'].append(dia)
+            result['mes_criacao'].append(mes)
+            result['ano_criacao'].append(ano)
+            result['path'].append(path)
+            
+    return pd.DataFrame(result)
