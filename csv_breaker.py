@@ -1,4 +1,3 @@
-import pandas as pd
 import csv
 import os
 
@@ -54,5 +53,6 @@ class CsvBreaker():
                     del linhas
                     linhas = []
             else:
+                self.file.close()
                 print('Processo finalizado')
         
